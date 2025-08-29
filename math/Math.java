@@ -73,5 +73,11 @@ class Math {
     for (int i = 1000; i <= 1000 && i >= 0; i = i - 10) {
       System.out.print(i + " - ");
     }
+
+    //All multiples of 2 from 1 to 100
+    for (int i=2; 1 < 100; i = i + 2) {
+        System.out.print(i + ", ")
+    }
+        
   }
 }
