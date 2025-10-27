@@ -3,44 +3,72 @@ package piglatin;
 public class PigLatinTranslator {
     public static Book translate(Book input) {
         Book translatedBook = new Book();
-
-        // TODO: Add code here to populate translatedBook with a translation of the
-        // input book.
-        // Curent do-nothing code will return an empty book.
-        // Your code will need to call translate(String input) many times.
-
+        translatedBook.setTitle(input.getTitle());
+        for (int i = 0; i < input.getLineCount(); i++) {
+            translatedBook.appendLine(translate(input.getLine(i)));
+        }
         return translatedBook;
     }
 
     public static String translate(String input) {
-        System.out.println("  -> translate('" + input + "')");
-
-        String result = "";
-
-        // TODO: translate a string input, store in result.
-        // The input to this function could be any English string.
-        // It may be made up of many words.
-        // This method must call translateWord once for each word in the string.
-        result = translateWord(input);
-
-        return result;
+        String[] words = input.split("\\s+");
+        StringBuilder result = new StringBuilder();
+        for (String word : words) {
+            result.append(translateWord(word)).append(" ");
+        }
+        return result.toString().trim();
     }
 
     private static String translateWord(String input) {
-        System.out.println("  -> translateWord('" + input + "')");
+        if (input.isEmpty()) {
+            return input;
+        }
 
-        String result = "";
+        int punctuationIndex = input.length();
+        boolean hasPunctuation = false;
+        if (!Character.isLetter(input.charAt(input.length() - 1))) {
+            punctuationIndex = input.length() - 1;
+            hasPunctuation = true;
+        }
 
-        // TODO: Replace this code to correctly translate a single word.
-        // Start here first!
-        // This is the first place to work.
-        result = input; // delete this line
+        String punctuation = "";
+        if (hasPunctuation) {
+            punctuation = input.substring(punctuationIndex);
+        }
+        String word = input.substring(0, punctuationIndex);
 
-        return result;
+        boolean isCapitalized = Character.isUpperCase(word.charAt(0));
+        boolean isAllCaps = word.equals(word.toUpperCase());
+
+        word = word.toLowerCase();
+
+        int vowelIndex = 0;
+        while (vowelIndex < word.length() && !isVowel(word.charAt(vowelIndex))) {
+            vowelIndex++;
+        }
+
+        if (vowelIndex == word.length()) {
+            // If the word doesn't contain any vowels
+            vowelIndex = 1;
+        }
+
+        String translatedWord;
+        if (vowelIndex == 0) {
+            translatedWord = word + "way";
+        } else {
+            translatedWord = word.substring(vowelIndex) + word.substring(0, vowelIndex) + "ay";
+        }
+
+        if (isCapitalized && isAllCaps) {
+            translatedWord = translatedWord.toUpperCase();
+        } else if (isCapitalized) {
+            translatedWord = Character.toUpperCase(translatedWord.charAt(0)) + translatedWord.substring(1);
+        }
+
+        return translatedWord + punctuation;
     }
 
-    // Add additonal private methods here.
-    // For example, I had one like this:
-    // private static String capitalizeFirstLetter(String input)
-
+    private static boolean isVowel(char c) {
+        return "aeiou".indexOf(c) != -1;
+    }
 }
