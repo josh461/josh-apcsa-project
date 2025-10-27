@@ -20,54 +20,47 @@ public class PigLatinTranslator {
     }
 
     private static String translateWord(String input) {
-        if (input.isEmpty()) {
+        if (input.length() == 0) {
+            return input;
+        }
+        if (input == null || input.isEmpty()) {
             return input;
         }
 
-        int punctuationIndex = input.length();
-        boolean hasPunctuation = false;
-        if (!Character.isLetter(input.charAt(input.length() - 1))) {
-            punctuationIndex = input.length() - 1;
-            hasPunctuation = true;
-        }
-
         String punctuation = "";
-        if (hasPunctuation) {
-            punctuation = input.substring(punctuationIndex);
+        if (!Character.isLetter(input.charAt(input.length() - 1))) {
+            punctuation = String.valueOf(input.charAt(input.length() - 1));
+            input = input.substring(0, input.length() - 1);
+            if (input.length() == 0) {
+                return input;
+            }
         }
-        String word = input.substring(0, punctuationIndex);
+    
 
-        boolean isCapitalized = Character.isUpperCase(word.charAt(0));
-        boolean isAllCaps = word.equals(word.toUpperCase());
-
-        word = word.toLowerCase();
+        boolean isCapitalized = Character.isUpperCase(input.charAt(0));
+        input = input.toLowerCase();
 
         int vowelIndex = 0;
-        while (vowelIndex < word.length() && !isVowel(word.charAt(vowelIndex))) {
+        while (vowelIndex < input.length() && !isVowel(input.charAt(vowelIndex))) {
             vowelIndex++;
-        }
-
-        if (vowelIndex == word.length()) {
-            // If the word doesn't contain any vowels
-            vowelIndex = 1;
         }
 
         String translatedWord;
         if (vowelIndex == 0) {
-            translatedWord = word + "way";
+            translatedWord = input + "ay";
+        } else if (vowelIndex == input.length()) {
+            translatedWord = input + "ay";
         } else {
-            translatedWord = word.substring(vowelIndex) + word.substring(0, vowelIndex) + "ay";
+            translatedWord = input.substring(vowelIndex) + input.substring(0, vowelIndex) + "ay";
         }
 
-        if (isCapitalized && isAllCaps) {
-            translatedWord = translatedWord.toUpperCase();
-        } else if (isCapitalized) {
+        if (isCapitalized) {
             translatedWord = Character.toUpperCase(translatedWord.charAt(0)) + translatedWord.substring(1);
         }
 
         return translatedWord + punctuation;
     }
-
+    
     private static boolean isVowel(char c) {
         return "aeiou".indexOf(c) != -1;
     }
