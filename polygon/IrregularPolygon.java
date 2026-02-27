@@ -68,7 +68,7 @@ public class IrregularPolygon {
         //     sum += (current.x * next.y) - (current.y * next.x);
         // }
     
-        // return Math.abs(sum) / 2.0;
+        return Math.abs(sum) / 2.0;
     }
 
     public void draw()
